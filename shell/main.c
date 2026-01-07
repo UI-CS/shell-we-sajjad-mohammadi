@@ -5,6 +5,8 @@
 #include <readline/readline.h>
 #include "shell.h"
 
+int should_run=1;
+
 
 int main() {
     char **command;
@@ -12,10 +14,14 @@ int main() {
     pid_t child_pid;
     int stat_loc;
 
-    while (1) {
+    while (should_run) {
         input = readline("unixsh> ");
         fflush(stdout);
         command = parse_input(input);
+
+        if (built_in(command)) {
+            continue;
+        }
 
         child_pid = fork();
         if (child_pid == 0) {
