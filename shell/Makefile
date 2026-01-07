@@ -5,8 +5,8 @@ SRCDIR = .
 BUILDDIR = ./build/Debug
 TARGET = $(BUILDDIR)/shell
 
-SOURCES = $(SRCDIR)/main.c $(SRCDIR)/parse_input.c
-OBJECTS = $(BUILDDIR)/main.o $(BUILDDIR)/parse_input.o
+SOURCES = $(SRCDIR)/main.c $(SRCDIR)/parse_input.c $(SRCDIR)/built_in.c
+OBJECTS = $(BUILDDIR)/main.o $(BUILDDIR)/parse_input.o $(BUILDDIR)/built_in.o
 HEADERS = $(SRCDIR)/shell.h
 
 .PHONY: all clean run
