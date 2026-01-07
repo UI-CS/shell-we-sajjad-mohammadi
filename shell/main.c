@@ -4,23 +4,8 @@
 #include <sys/wait.h>
 #include <readline/readline.h>
 #include "shell.h"
-#include <signal.h>
 
 int should_run=1;
-
-void sigchld_handler(int sig) {
-    pid_t pid;
-    int status;
-    
-    while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
-        if (WIFEXITED(status)) {
-            printf("[%d] Done\n", pid);
-        } else if (WIFSIGNALED(status)) {
-            printf("[%d] Terminated by signal %d\n", pid, WTERMSIG(status));
-        }
-        fflush(stdout);
-    }
-}
 
 int main() {
     char **command;
@@ -29,19 +14,13 @@ int main() {
     int stat_loc;
     int background = 0;
 
-    signal(SIGCHLD, sigchld_handler);
-
     while (should_run) {
         input = readline("unixsh> ");
         fflush(stdout);
 
-        if (input == NULL) {
-            printf("\n");
-            continue;
-        }
-
-        if (strlen(input) == 0 ) {
+        if (strlen(input) == 0) {
             free(input);
+            free(command);
             continue;
         }
 
@@ -75,10 +54,11 @@ int main() {
                 waitpid(child_pid, &stat_loc, WUNTRACED);
             } else {
                 printf("[%d] %s running in background\n", child_pid, command[0]);
-                fflush(stdout);
+                printf("[%d] %s completed\n", child_pid, command[0]);
+
             }
         }
-        printf("freeing input and command\n");
+
         free(input);
         free(command);
     }
